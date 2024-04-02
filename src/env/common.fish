@@ -7,6 +7,14 @@ set PATH /usr/local/sbin $PATH
 set PATH /usr/local/bin $PATH
 set PATH ~/.bin $PATH
 
+if [ -z "$UDIR" ]
+  if [ (command -v defaults) ]
+    set -gx UDIR "Users"
+  else
+    set -gx UDIR "home"
+  end
+end
+
 set -x EDITOR nano
 set -x GIT_EDITOR nano
 set -x LANG en_US.UTF-8
