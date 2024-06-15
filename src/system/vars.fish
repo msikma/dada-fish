@@ -17,9 +17,9 @@ set -gx DADA_SYS_VARS_MAX_AGE_MINS "1"
 set -gx DADA_FISH_REPO (realpath "$DADA_FISH/../.git")
 
 # Size of the columns in help lists.
-set -g DADA_LEFT_COL_SIZE 16
+set -g DADA_LEFT_COL_SIZE 17
 set -g DADA_RIGHT_COL_SIZE 34
-set -g DADA_LEFT_COL_SIZE_LARGE 32
+set -g DADA_LEFT_COL_SIZE_LARGE 28
 set -g DADA_RIGHT_COL_SIZE_LARGE 68
 
 # By default, we set the env to "desktop".
