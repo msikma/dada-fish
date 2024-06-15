@@ -45,3 +45,13 @@ function _get_disk_usage
 
   echo "$usage ($avail_h/$total_h GB available)"
 end
+
+## Checks that a temporary directory we made exists and is writable.
+function _require_temp_dir --argument-names dirpath
+  if [ ! -d $dirpath ]
+    echo "error: can't access temp directory: "$dirpath
+    return 1
+  end
+
+  return 0
+end
