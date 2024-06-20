@@ -32,6 +32,17 @@ function _file_base --argument-names filepath
   echo "$filepath" | sed -E 's/\.[^.]+$//g'
 end
 
+## Prints the last modified Unix time for a given path
+function _get_last_modified --argument-names filepath
+  if not test -e "$filepath"
+    echo "0"
+    return
+  end
+
+  gstat -c %Y $filepath
+end
+
+
 ## Returns disk usage in human readable format
 function _get_disk_usage
   # Note: get all information in 1024kb blocks for easier arithmetic.

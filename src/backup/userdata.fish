@@ -10,8 +10,13 @@ function _7zz_userdata --argument-names basedir local_fn remote_fn source
   # Create a new backup.
   7zz a "$local_fn" -y -bsp1 -bso0 -bb0 -mx5 -xr!node_modules -xr!.DS_Store "$source"
 
-  touch -r "./$source" "$local_fn"
+  # Grab the modified date of the source directory, and set the destination file to this same date.
+  set source_modified (_get_last_modified "$source")
+  set formatted_time (date -r "$source_modified" +"%Y%m%d%H%M.%S")
+  touch -t "$formatted_time" "$local_fn"
+
   popd
+
   mv "$local_fn" "$remote_fn"
 end
 
@@ -48,7 +53,22 @@ function backup_userdata --description "Backs up user data"
     set remote_fn "$basedir/$base.zip"
     
     echo (set_color yellow)"$name"(set_color reset)": "(set_color reset)"$dir"(set_color reset)
-    _7zz_userdata "$home" "$local_fn" "$remote_fn" "$relative_source"
+
+    if not test -e "$dir"
+      echo (set_color red)"Could not stat the source directory."(set_color reset)
+      continue
+    end
+
+    set orig_lm (_get_last_modified "$dir")
+    set dest_lm (_get_last_modified "$remote_fn")
+
+    if [ "$dest_lm" -lt "$orig_lm" ]
+      # The destination file is outdated (or it doesn't exist). Make the backup.
+      _7zz_userdata "$home" "$local_fn" "$remote_fn" "$relative_source"
+    else
+      # No need to do anything.
+      echo (set_color blue)"No need to backup."(set_color reset)
+    end
   end
 
   if [ -d "$temp" ]
