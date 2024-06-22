@@ -15,7 +15,7 @@ function main --argument-names arg
     set base (basename "$image")
     set ext (string split -r . "$base" | tail -n 1)
 
-    convert "$image" -crop 50%x100% +repage -quality 80 -sampling-factor 1x1 "$outdir"/"_Page "(printf "%02d" "$n")".$ext"
+    magick "$image" -crop 50%x100% +repage -quality 80 -sampling-factor 1x1 "$outdir"/"_Page "(printf "%02d" "$n")".$ext"
 
     set n (math "$n" + 1)
   end

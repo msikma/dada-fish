@@ -17,7 +17,7 @@ function img_jpeg --description "Converts images to JPEG"
     end
 
     set target "$base.jpg"
-    magick convert -format jpg -compress jpeg -quality "$_jpeg_quality" "$filepath" "$target"
+    magick -format jpg -compress jpeg -quality "$_jpeg_quality" "$filepath" "$target"
   end
 end
 
