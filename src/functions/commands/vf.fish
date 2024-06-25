@@ -2,6 +2,7 @@
 # © MIT license
 
 set -gx DADA_VF_DIR ~/".venv"
+# TODO: auto deactivate on leave dir
 
 function _vf_new --argument-names name
   if [ -z "$name" ]
