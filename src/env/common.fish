@@ -36,3 +36,6 @@ end
 # Whether this is designated as a remote server instead of a local machine.
 # This causes the hostname to be displayed in the prompt.
 set DADA_IS_SERVER (if test -e ~/".dada-server"; echo "1"; end)
+
+# I don't know how to exit Vim.
+set -gx GIT_EDITOR "nano"
