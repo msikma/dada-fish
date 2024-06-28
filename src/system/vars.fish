@@ -28,4 +28,4 @@ if [ -z "$DADA_FISH_ENV" ]
 end
 
 # Work directories that have git repos listed.
-set -g DADA_WORK_DIRS $DADA_WORK_DIRS ~/"Code" ~/"Work" ~/"Utilities" ~/"Source"
+set -g DADA_WORK_DIRS $DADA_WORK_DIRS ~/"Code" ~/"Work" ~/"Source"
