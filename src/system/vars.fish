@@ -8,11 +8,6 @@ set -gx DADA_CACHE ~/".cache/dada-fish/"
 # Path to the database.
 set -gx DADA_DB "$DADA_CACHE/db.sqlite"
 
-# Path to the sys_vars file.
-set -gx DADA_SYS_VARS "$DADA_CACHE/sys_vars.fish"
-# Amount of minutes that the sys_vars are cached.
-set -gx DADA_SYS_VARS_MAX_AGE_MINS "1"
-
 # Directory where the repo is located.
 set -gx DADA_FISH_REPO (realpath "$DADA_FISH/../.git")
 
