@@ -18,4 +18,4 @@ function _get_current_weather
   curl --connect-timeout 4 -s "wttr.in" | sed -n '3,7 p'
 end
 
-#_register_cache_vars "weather" "_gen_weather_vars_cache" "15" "1"
+_register_cache_vars "weather" "_gen_weather_vars_cache" "15" "1"
