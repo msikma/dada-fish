@@ -3,7 +3,6 @@
 
 ## Displays the greeting when a new terminal is opened.
 function fish_greeting
-  return
   # Retrieve cached values that we'll use to display the welcome message.
   source "$DADA_CACHE/vars_sys.fish"
   source "$DADA_CACHE/vars_weather.fish"
