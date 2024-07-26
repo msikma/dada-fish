@@ -103,4 +103,4 @@ function vf --argument-names arg name --description "Activates Python virtualenv
 end
 
 _register_command pkg "vf" "…"
-#_register_dependency "pip" "virtualenv" "virtualenv"
+_register_dependency "pip" "virtualenv" "virtualenv"
