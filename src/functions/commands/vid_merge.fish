@@ -1,10 +1,10 @@
 #!/usr/bin/env fish
 
-function strip_ext
+function _strip_ext
   echo (string split -r -m1 . $argv[1])[1]
 end
 
-function merge_vids
+function _merge_vids
   # Use a temp directory to work in.
   set mergedir (mktemp -d)
   set files (realpath $argv | sort -z)
@@ -16,7 +16,7 @@ function merge_vids
     # Sort apparently adds an extra line. Not sure how to remove it.
     if [ "$n" = "" ]; continue; end
     
-    set ts (strip_ext (basename "$n"))".ts"
+    set ts (_strip_ext (basename "$n"))".ts"
     set -a ts_files "$ts"
     ffmpeg -i "$n" -c copy -bsf:v h264_mp4toannexb -f mpegts "./$ts"
   end
@@ -32,7 +32,7 @@ function merge_vids
   rm -rf $mergedir
 end
 
-function vid_merge --description "Merges videos into a single file"
+function merge_vids --description "Merges videos into a single file"
   set usage "usage: merge_vids.sh [--help] files"
   for arg in $argv
     if [ (string match -r '^-h$|^--help$' -- "$arg") ]
@@ -48,8 +48,8 @@ function vid_merge --description "Merges videos into a single file"
     return 1
   end
   
-  merge_vids $argv
+  _merge_vids $argv
 end
 
-_register_command media "vid_merge" "fn…"
+_register_command media "merge_vids" "fn…"
 _register_dependency "brew" "ffmpeg" "ffmpeg"
