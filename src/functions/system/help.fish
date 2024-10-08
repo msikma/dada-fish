@@ -52,7 +52,7 @@ function _list_backup_scripts
       set description $scripts[(math "$n" + 2)]
       set last_run (_get_backup_time "$name")
       if [ "$last_run" != "-" ]
-        set last_run (_relative_timestamp "$last_run")
+        set last_run (_relative_timestamp "@$last_run")
       end
 
       set -a lines "$color""%s""$reset""%-"$DADA_RIGHT_COL_SIZE"s""$reset""%-"$DADA_RIGHT_COL_SIZE"s" (_backup_script_label_padded "$name" "$color" "$DADA_LEFT_COL_SIZE") "$description" "$last_run"
