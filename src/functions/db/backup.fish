@@ -1,7 +1,7 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
-## Returns when a given backup type has last run.
+## Returns when a given backup type has last run as Unix timestamp.
 function _get_backup_time --argument-names name
   _query \
     ".param init" \
@@ -9,7 +9,7 @@ function _get_backup_time --argument-names name
     "select coalesce((select last_run from backup_log where name = :name), '-');"
 end
 
-## Sets the last run value of a given backup type.
+## Sets the last run value of a given backup type using a Unix timestamp.
 function _set_backup_time --argument-names name last_run
   _query \
     ".param init" \
