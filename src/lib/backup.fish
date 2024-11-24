@@ -31,6 +31,26 @@ function _check_rsync_version
   return 0
 end
 
+## 7zips a directory to a target filename.
+function _make_7zz_backup --argument-names basedir local_fn remote_fn source
+  pushd "$basedir"
+  
+  # Unlink the previous backup.
+  rm -f "$remote_fn"
+  
+  # Create a new backup.
+  7zz a "$local_fn" -y -bsp1 -bso0 -bb0 -mx5 -xr!node_modules -xr!.DS_Store "$source"
+
+  # Grab the modified date of the source directory, and set the destination file to this same date.
+  set source_modified (_get_last_modified "$source")
+  set formatted_time (date -r "$source_modified" +"%Y%m%d%H%M.%S")
+  touch -t "$formatted_time" "$local_fn"
+
+  popd
+
+  mv "$local_fn" "$remote_fn"
+end
+
 ## Checks that a number of directories exists and can be backed up or written to.
 function _require_needed_dirs --argument-names script_name dir_type
   set required_dirs $argv[3..-1]

@@ -1,25 +1,6 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
-function _7zz_userdata --argument-names basedir local_fn remote_fn source
-  pushd "$basedir"
-  
-  # Unlink the previous backup.
-  rm -f "$remote_fn"
-  
-  # Create a new backup.
-  7zz a "$local_fn" -y -bsp1 -bso0 -bb0 -mx5 -xr!node_modules -xr!.DS_Store "$source"
-
-  # Grab the modified date of the source directory, and set the destination file to this same date.
-  set source_modified (_get_last_modified "$source")
-  set formatted_time (date -r "$source_modified" +"%Y%m%d%H%M.%S")
-  touch -t "$formatted_time" "$local_fn"
-
-  popd
-
-  mv "$local_fn" "$remote_fn"
-end
-
 function backup_userdata --description "Backs up user data"
   ! _require_cmd "7zz"; and return 1
   ! _check_rsync_version; and return 1
@@ -64,7 +45,7 @@ function backup_userdata --description "Backs up user data"
 
     if [ "$dest_lm" -lt "$orig_lm" ]
       # The destination file is outdated (or it doesn't exist). Make the backup.
-      _7zz_userdata "$home" "$local_fn" "$remote_fn" "$relative_source"
+      _make_7zz_backup "$home" "$local_fn" "$remote_fn" "$relative_source"
     else
       # No need to do anything.
       echo (set_color blue)"No need to backup."(set_color reset)
