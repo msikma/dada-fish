@@ -34,6 +34,7 @@ end
 ## Returns all backup scripts that we can register.
 function _get_backup_scripts
   ls "$DADA_FISH/backup/"*".fish"
+  ls "$DADA_FISH/backup/external/"*".fish"
 end
 
 ## Returns all backup script plugins.
