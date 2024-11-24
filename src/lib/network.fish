@@ -10,6 +10,15 @@ function _get_hostname
   end
 end
 
+## Returns the computer name.
+function _get_computer_name
+  if [ (_is_macos) ]
+    echo (scutil --get ComputerName)
+  else
+    hostname -s
+  end
+end
+
 ## Prints the current local IP, e.g. "10.0.1.5"
 function _get_local_ip
   # TODO: there is probably a better way to do this.

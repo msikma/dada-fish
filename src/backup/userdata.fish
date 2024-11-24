@@ -40,7 +40,7 @@ function backup_userdata --description "Backs up user data"
   set temp (mktemp -d)
   ! _require_temp_dir "$temp"; and return 1
 
-  echo "Backing up "(set_color yellow)"$backup_type"(set_color normal)" for "(set_color green)(_get_hostname)(set_color reset)":"
+  echo "Backing up "(set_color yellow)"$backup_type"(set_color normal)" for "(set_color green)(_get_computer_name)(set_color reset)":"
   echo ""
   for n in (seq 1 3 (count $backup_dirs))
     set type $backup_dirs[$n]

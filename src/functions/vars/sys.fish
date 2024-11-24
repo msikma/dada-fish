@@ -10,9 +10,10 @@ function _gen_sys_vars_cache --argument-names filepath
   set local_ip (_get_local_ip)
   set disk_usage (_get_disk_usage)
   set sys_hostname (_get_hostname)
+  set sys_devicename (_get_computer_name)
   set user_hostname (whoami)"@$hostname"
 
-  for var in "os_version" "kernel_version" "git_version" "git_timestamp" "local_ip" "disk_usage" "sys_hostname" "user_hostname"
+  for var in "os_version" "kernel_version" "git_version" "git_timestamp" "local_ip" "disk_usage" "sys_hostname" "sys_devicename" "user_hostname"
     printf "set %s %s\n" "$var" (string escape "$$var") >> "$filepath"
   end
 end

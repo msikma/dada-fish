@@ -12,7 +12,7 @@ set _rsync_min_protocol_version 31
 ## Returns the backup directory for the current machine.
 function _get_machine_backup_dir
   ! _require_var "DADA_BACKUP_MACHINE_BASEDIR"; and return 1
-  echo "$DADA_BACKUP_MACHINE_BASEDIR/"(_get_hostname)
+  echo "$DADA_BACKUP_MACHINE_BASEDIR/"(_get_computer_name)
 end
 
 ## Ensures that a required command is present.

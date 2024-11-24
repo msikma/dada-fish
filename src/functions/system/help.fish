@@ -23,7 +23,7 @@ end
 
 function backup --description "Shows backup scripts"
   echo
-  echo "Backup commands and status for "(set_color green)(_get_hostname)(set_color reset)":"
+  echo "Backup commands and status for "(set_color green)(_get_computer_name)(set_color reset)":"
   _list_backup_scripts $_DADA_BACKUP_SCRIPTS
   echo
 end
