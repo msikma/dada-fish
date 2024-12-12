@@ -114,7 +114,7 @@ function transcribe_video_file --argument-names filepath tempdir task
   set -q tempdir; or set tempdir (mktemp -d)
   set -q task; or set task translate
 
-  transcribe_video_file "$filepath" "$tempdir" "$task"
+  _transcribe_video_file "$filepath" "$tempdir" "$task"
 end
 
 main $argv
