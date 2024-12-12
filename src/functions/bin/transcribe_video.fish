@@ -6,7 +6,7 @@ source "$curr/../../lib/os.fish"
 set USAGE 'usage: transcribe_video FILE'
 set MODEL "medium"
 
-function transcribe_video_file --argument-names filepath tempdir task
+function _transcribe_video_file --argument-names filepath tempdir task
   if [ ! -e "$filepath" ]
     echo "transcribe_video: cannot find file: $filepath"
     return 1
@@ -108,6 +108,13 @@ function main
 
   echo -n (set_color cyan)"Done. Processed "(set_color reset)
   echo (test $count -eq 1; and echo (set_color yellow)"$count"(set_color cyan)" file"; or echo (set_color yellow)"$count"(set_color cyan)" files")
+end
+
+function transcribe_video_file --argument-names filepath tempdir task
+  set -q tempdir; or set tempdir (mktemp -d)
+  set -q task; or set task translate
+
+  transcribe_video_file "$filepath" "$tempdir" "$task"
 end
 
 main $argv
