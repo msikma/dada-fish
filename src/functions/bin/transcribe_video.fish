@@ -80,10 +80,10 @@ function main
     return 1
   end
 
-  # Default to "transcribe" task; if -t is set, use "translate" task.
-  set task "transcribe"
+  # Default to "translate" task; if -t is set, use "transcribe" task.
+  set task "translate"
   if [ "$argv[1]" = "-t" ]
-    set task "translate"
+    set task "transcribe"
     set argv $argv[2..-1]
   end
 
@@ -96,7 +96,7 @@ function main
 
   set count 0
   for filepath in $argv
-    if time transcribe_video_file "$filepath" "$tempdir" "$task"
+    if time _transcribe_video_file "$filepath" "$tempdir" "$task"
       set count (math "$count" + 1)
     end
     echo
@@ -108,13 +108,6 @@ function main
 
   echo -n (set_color cyan)"Done. Processed "(set_color reset)
   echo (test $count -eq 1; and echo (set_color yellow)"$count"(set_color cyan)" file"; or echo (set_color yellow)"$count"(set_color cyan)" files")
-end
-
-function transcribe_video_file --argument-names filepath tempdir task
-  set -q tempdir; or set tempdir (mktemp -d)
-  set -q task; or set task translate
-
-  _transcribe_video_file "$filepath" "$tempdir" "$task"
 end
 
 main $argv
