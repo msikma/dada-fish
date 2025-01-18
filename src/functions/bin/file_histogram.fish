@@ -3,7 +3,7 @@
 function _get_files_by_interval --argument-names dir interval
   for fileinfo in (find "$dir" -type f -exec stat -f "%m %N" {} +)
     set unixtime (string split " " "$fileinfo" -f 1)
-    set filepath (string split " " "$fileinfo" -f 2)
+    set filepath (string split " " "$fileinfo" -f 2 -m 1)
     set filedate (date -r "$unixtime" $interval)
     echo "$filedate"
   end
@@ -11,7 +11,7 @@ end
 
 function _print_file --argument-names label fileinfo
   set unixtime (string split " " "$fileinfo" -f 1)
-  set filepath (string split " " "$fileinfo" -f 2)
+  set filepath (string split " " "$fileinfo" -f 2 -m 1)
   set filedate (date -r "$unixtime" "+%Y-%m-%d %H:%M:%S")
   echo "$label: "(set_color yellow)"$filedate "(set_color green)"$filepath"(set_color normal)
 end
