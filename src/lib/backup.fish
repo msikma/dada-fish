@@ -56,7 +56,7 @@ function _require_needed_dirs --argument-names script_name dir_type
   set required_dirs $argv[3..-1]
   set dir_count (count $required_dirs)
   if [ $dir_count -eq 0 ]
-    echo $script_name": error: called _check_needed_dirs with no directory arguments"
+    echo $script_name": error: called _require_needed_dirs with no directory arguments"
     return 1
   end
   for n in (seq 1 $dir_count)
@@ -68,4 +68,25 @@ function _require_needed_dirs --argument-names script_name dir_type
   end
 
   return 0
+end
+
+## Prints the name of this backup script and the computer's hostname if provided. Also starts the timer.
+function _print_backup_start --argument-names backup_type target_name
+  echo
+  echo -n "Backing up "(set_color yellow)"$backup_type"(set_color normal)
+  if [ (count $target_name) -ne 0 ]
+    echo " for "(set_color green)"$target_name"(set_color reset)":"
+  else
+    echo ":"(set_color normal)
+  end
+  _timer_start
+end
+
+## Stops the timer and prints how long the backup took.
+function _print_backup_finish --argument-names backup_type
+  set timer_val (_timer_end)
+  set timer_h (_duration_humanized $timer_val)
+  echo
+  echo (set_color cyan)"Done in $timer_h."(set_color normal)
+  echo
 end
