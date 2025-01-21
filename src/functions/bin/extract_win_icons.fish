@@ -54,5 +54,5 @@ end
 
 main $argv
 
-#_dada_fish _register_bin regular "extract_win_icons" "path" "extract_win_icons.fish" "Extracts Windows icons from files"
+#_dada_fish _register_bin regular "extract_win_icons" "fn… [-d]" "extract_win_icons.fish" "Extracts Windows icons from files"
 #_dada_fish _register_dependency "brew" "wrestool" "icoutils"
