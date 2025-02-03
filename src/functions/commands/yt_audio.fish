@@ -2,6 +2,8 @@
 # © MIT license
 
 function yt_audio --description "Archives audio from Youtube"
+  ! _require_cmd "yt-dlp"; and return 1
+
   # If the first argument is not a URL, assume it's the audio format.
   # Default to 'best' audio (variable output extension).
   if string match -q "http*" $argv[1]
@@ -31,3 +33,4 @@ function yt_audio --description "Archives audio from Youtube"
 end
 
 _register_command archiving "yt_audio" "url…"
+_register_dependency "brew" "yt-dlp" "yt-dlp"
