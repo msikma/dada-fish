@@ -50,7 +50,9 @@ function _transcribe_video_file --argument-names filepath tempdir task
     --task "$task" \
     "$tempdir/outfile.wav"
   
-  if [ ! -e "$tempdir/outfile.$sub_ext" ]
+  set sub_file "$tempdir/outfile.$sub_ext"
+  
+  if [ ! -e "$sub_file" ]
     echo "transcribe_video: could not transcribe video file (whisper failure): $filepath"
     return 1
   end
@@ -58,7 +60,7 @@ function _transcribe_video_file --argument-names filepath tempdir task
   if ffmpeg -i "$filepath" \
     -hide_banner \
     -loglevel error \
-    -i "$tempdir/outfile.$sub_ext" \
+    -i "$sub_file" \
     -c copy \
     -c:s "$sub_codec" \
     -disposition:s:0 default \
