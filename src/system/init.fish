@@ -27,4 +27,5 @@ function _dada_daemon_init
   _ensure_cache_vars
   _ensure_db
   _ensure_bin_cache
+  _run_cron_scripts
 end

@@ -9,6 +9,7 @@ source "$DADA_FISH/system/log.fish"
 source "$DADA_FISH/system/setup.fish"
 source "$DADA_FISH/system/vars.fish"
 
+source "$DADA_FISH/lib/cron.fish"
 source "$DADA_FISH/lib/cache.fish"
 source "$DADA_FISH/lib/backup.fish"
 source "$DADA_FISH/lib/columns.fish"

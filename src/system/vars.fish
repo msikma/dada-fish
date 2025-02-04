@@ -4,6 +4,7 @@
 # Configuration root directory.
 set -gx DADA_CONFIG ~/".config/dada-fish/"
 set -gx DADA_CACHE ~/".cache/dada-fish/"
+set -gx DADA_CRON ~/".cron/dada-fish/"
 
 # Path to the database.
 set -gx DADA_DB "$DADA_CACHE/db.sqlite"
