@@ -3,6 +3,9 @@
 
 ## Functions for running cron scripts.
 
+## Default time we wait to run scripts, if not specified in the script itself.
+set _cron_default_time 3600
+
 ## Finds all cron scripts in the ~/.cron directory.
 function _find_cron_scripts
   mkdir -p "$DADA_CRON"
@@ -47,7 +50,7 @@ end
 function _get_cron_interval --argument-names script
   set -l interval (grep -o "_cron_interval [0-9]*" $script | cut -d' ' -f2)
   if [ -z "$interval" ]
-    echo 0
+    echo $_cron_default_time
   else
     echo $interval
   end
