@@ -51,6 +51,7 @@ function _transcribe_video_file --argument-names filepath tempdir task
     "$tempdir/outfile.wav"
   
   set sub_file "$tempdir/outfile.$sub_ext"
+  cp "$sub_file" "$orig_path/$orig_base.$sub_ext"
   
   if [ ! -e "$sub_file" ]
     echo "transcribe_video: could not transcribe video file (whisper failure): $filepath"
