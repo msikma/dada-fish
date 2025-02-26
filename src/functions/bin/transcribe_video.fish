@@ -3,7 +3,7 @@
 set curr (dirname (status --current-filename))
 source "$curr/../../lib/os.fish"
 
-set USAGE 'usage: transcribe_video FILE'
+set USAGE 'usage: transcribe_video [-tl | -ts] FILE'
 set MODEL "medium"
 
 function _transcribe_video_file --argument-names filepath tempdir task
@@ -83,10 +83,19 @@ function main
     return 1
   end
 
-  # Default to "translate" task; if -t is set, use "transcribe" task.
+  if [ "$argv[1]" = "-h" -o "$argv[1]" = "--help" ]
+    echo $USAGE
+    return 0
+  end
+
+  # Default to "translate" task; if -ts is set, use "transcribe" task.
   set task "translate"
-  if [ "$argv[1]" = "-t" ]
+  if [ "$argv[1]" = "-ts" ]
     set task "transcribe"
+    set argv $argv[2..-1]
+  end
+  if [ "$argv[1]" = "-tl" ]
+    set task "translate"
     set argv $argv[2..-1]
   end
 
