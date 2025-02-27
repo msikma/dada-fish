@@ -21,6 +21,10 @@ end
 
 ## Prints the difference between timer_start and now.
 function _timer_end
+  if [ -z "$a_secs" ]
+    echo "(unknown)"
+    return
+  end
   set b_secs (gdate +%s)
   set b_ms (gdate +%N)
 
@@ -29,6 +33,10 @@ end
 
 ## Prints out a humanized duration of a time in seconds.
 function _duration_humanized --argument-names sec
+  if [ "$sec" = "(unknown)" ]
+    echo $sec
+    return
+  end
   _time_unit $sec
 end
 
