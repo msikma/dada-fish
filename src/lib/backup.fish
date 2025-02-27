@@ -31,15 +31,84 @@ function _check_rsync_version
   return 0
 end
 
+## Runs rsync on a source and destination directory.
+##
+## The arguments used to run rsync are -ahEANS8, which expands to the following:
+##
+## -a, --archive          archive mode; equals -rlptgoD (no -H,-A,-X)
+##  └ -r, --recursive     recurse into directories
+##  └ -l, --links         copy symlinks as symlinks
+##  └ -p, --perms         preserve permissions
+##  └ -t, --times         preserve modification times
+##  └ -g, --group         preserve group
+##  └ -o, --owner         preserve owner (super-user only)
+##  └ -D                  same as --devices --specials
+##     └ --devices        preserve device files (super-user only)
+##     └ --specials       preserve special files
+## -h, --human-readable   output numbers in a human-readable format
+## -E, --executability    preserve the file's executability
+## -A, --acls             preserve ACLs (implies --perms)
+## -N, --crtimes          preserve create times (newness)
+## -S, --sparse           turn sequences of nulls into sparse blocks
+## -8, --8-bit-output     leave high-bit chars unescaped in output
+##
+## If 'delete' is passed as 1, this will delete files that are in the destination
+## but not in the source.
+##
+## To exclude directories, pass any number of paths (relative to the source path)
+## as the last arguments, after 'delete'.
+##
+## Note: this doesn't copy extended attributes (-X) which won't work on btrfs.
+## Change if we're upgrading to a better fs.
+##
+function _copy_rsync --argument-names src dst quiet delete
+  set excl $argv[5..-1]
+  set excl_arg
+  for n in $excl
+    set excl_arg $excl_arg "--exclude=$n"
+  end
+  if [ -n "$quiet" -a "$quiet" -eq 1 ]
+    set q 'q'
+  end
+  if [ -n "$delete" -a "$delete" -eq 1 ]
+    set d '--delete'
+  end
+
+  rsync -ahEANS8"$q" $d --progress $excl_arg --exclude=".*" --exclude="Icon*" --exclude='node_modules' --stats "$src" "$dst"
+end
+
+## Finds projects for backup purposes.
+function _find_projects --argument-names dir basedir
+  if [ -z "$basedir" ]
+    set basedir "./"
+  end
+  # We'll return 3 items per project: the name, the full directory where it's located, and its relative basedir.
+  # See src/backup/work.fish for a usage example.
+  set items
+  set dirs (find "$dir" -type d -maxdepth 1 -mindepth 1 | sort)
+  for dir in $dirs
+    set dirname (basename "$dir")
+    if string match -q '@*' -- "$dirname"
+      set nested_items (_find_projects "$dir" "$basedir""$dirname/")
+      set items $items $nested_items
+    else
+      set items $items "$dir" "$dirname" "$basedir"
+    end
+  end
+  printf '%s\n' $items
+end
+
 ## 7zips a directory to a target filename.
 function _make_7zz_backup --argument-names basedir local_fn remote_fn source
+  ! _require_cmd "7zz"; and return 1
+  
   pushd "$basedir"
   
   # Unlink the previous backup.
   rm -f "$remote_fn"
   
   # Create a new backup.
-  7zz a "$local_fn" -y -bsp1 -bso0 -bb0 -mx5 -xr!node_modules -xr!.DS_Store "$source"
+  7zz a "$local_fn" -y -bsp1 -bso0 -snl -snh -bb0 -mx5 -xr!node_modules -xr!.DS_Store "$source"
 
   # Grab the modified date of the source directory, and set the destination file to this same date.
   set source_modified (_get_last_modified "$source")
@@ -87,6 +156,15 @@ function _print_backup_finish --argument-names backup_type
   set timer_val (_timer_end)
   set timer_h (_duration_humanized $timer_val)
   echo
-  echo (set_color cyan)"Done in $timer_h."(set_color normal)
+  echo (set_color cyan)"Done in "(set_color yellow)"$timer_h"(set_color cyan)"."(set_color normal)
+  echo
+end
+
+## Stops the timer and prints an error message.
+function _print_backup_error --argument-names backup_type
+  set timer_val (_timer_end)
+  set timer_h (_duration_humanized $timer_val)
+  echo
+  echo (set_color red)"Ran for "(set_color yellow)"$timer_h"(set_color red)" and exited abnormally. Backup NOT completed."(set_color normal)
   echo
 end

@@ -30,8 +30,8 @@ function backup_userdata --description "Backs up user data"
 
     set base (basename "$dir")
     set relative_source (grealpath -s --relative-to="$home" "$dir")
-    set local_fn "$temp/$base.zip"
-    set remote_fn "$basedir/$base.zip"
+    set local_fn "$temp/$base.7z"
+    set remote_fn "$basedir/$base.7z"
     
     echo (set_color yellow)"$name"(set_color reset)": "(set_color reset)"$dir"(set_color reset)
 
