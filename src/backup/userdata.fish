@@ -45,7 +45,7 @@ function backup_userdata --description "Backs up user data"
 
     if [ "$dest_lm" -lt "$orig_lm" ]
       # The destination file is outdated (or it doesn't exist). Make the backup.
-      _make_7zz_backup "$home" "$local_fn" "$remote_fn" "$relative_source"
+      _make_7zz_backup "$home" "$local_fn" "$remote_fn" ./"$relative_source"
     else
       # No need to do anything.
       echo (set_color blue)"No need to backup."(set_color reset)
