@@ -35,5 +35,5 @@ end
 
 recover_img $argv
 
-#_dada_fish _register_dependency "brew" "photorec" "testdrive"
+#_dada_fish _register_dependency "brew" "testdrive" "photorec"
 #_dada_fish _register_bin regular "recover_img" "fn" "recover_img.fish" "Recovers lost files from .img file"

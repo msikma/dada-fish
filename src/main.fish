@@ -9,11 +9,12 @@ source "$DADA_FISH/system/log.fish"
 source "$DADA_FISH/system/setup.fish"
 source "$DADA_FISH/system/vars.fish"
 
+source "$DADA_FISH/lib/archiving.fish"
 source "$DADA_FISH/lib/cron.fish"
 source "$DADA_FISH/lib/cache.fish"
 source "$DADA_FISH/lib/backup.fish"
 source "$DADA_FISH/lib/columns.fish"
-source "$DADA_FISH/lib/daemon.fish"
+source "$DADA_FISH/lib/init.fish"
 source "$DADA_FISH/lib/datetime.fish"
 source "$DADA_FISH/lib/db.fish"
 source "$DADA_FISH/lib/deps.fish"
@@ -27,6 +28,7 @@ source "$DADA_FISH/lib/os.fish"
 source "$DADA_FISH/lib/prompt.fish"
 source "$DADA_FISH/lib/register.fish"
 source "$DADA_FISH/lib/repo.fish"
+source "$DADA_FISH/lib/util.fish"
 
 source "$DADA_FISH/functions/types.fish"
 source "$DADA_FISH/functions/aliases.fish"
@@ -37,6 +39,8 @@ source "$DADA_FISH/functions/system/recache.fish"
 
 if is_daemon $argv
   _dada_daemon_init
+else if is_deps $argv
+  _dada_deps_init
 else
   _dada_interactive_init
 end

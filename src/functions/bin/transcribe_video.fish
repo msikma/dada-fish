@@ -124,6 +124,6 @@ end
 
 main $argv
 
-#_dada_fish _register_dependency "brew" "whisper" "openai-whisper"
+#_dada_fish _register_dependency "brew" "openai-whisper" "whisper"
 #_dada_fish _register_dependency "brew" "ffmpeg" "ffmpeg"
 #_dada_fish _register_bin regular "transcribe_video" "[-t] fn…" "transcribe_video.fish" "Adds subtitles to a video file"

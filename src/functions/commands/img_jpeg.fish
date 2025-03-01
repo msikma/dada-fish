@@ -22,4 +22,4 @@ function img_jpeg --description "Converts images to JPEG"
 end
 
 _register_command media "img_jpeg" "fn…"
-_register_dependency "brew" "magick" "imagemagick"
+_register_dependency "brew" "imagemagick" "magick"

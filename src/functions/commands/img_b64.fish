@@ -28,4 +28,4 @@ function img_b64 --description "Converts image to base64 <img>"
 end
 
 _register_command media "img_b64" "fn"
-_register_dependency "brew" "magick" "imagemagick"
+_register_dependency "brew" "imagemagick" "magick"

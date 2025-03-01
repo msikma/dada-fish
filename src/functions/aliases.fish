@@ -19,7 +19,7 @@ _register_hidden_alias helpers "fn_ext" "fn" "_file_ext" "Prints filename extens
 
 _register_dependency "brew" "eza" "eza"
 _register_dependency "brew" "git" "git"
-_register_dependency "gnu-sed" "gsed"
+_register_dependency "brew" "gnu-sed" "gsed"
 
 # ghelp           Displays all Git commands         gr              Shows the repo's current remotes  
 # g               Git status                        gclone <dir>    Prints a clone command for a repo 
