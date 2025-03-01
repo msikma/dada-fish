@@ -74,7 +74,7 @@ function _copy_rsync --argument-names src dst quiet delete
     set d '--delete'
   end
 
-  rsync -ahEANS8"$q" $d --progress $excl_arg --exclude=".*" --exclude="Icon*" --exclude='node_modules' --stats "$src" "$dst"
+  rsync -ahEANS8"$q" $d --progress $excl_arg --exclude=".*" --exclude="Icon*" --exclude='node_modules' --exclude='System Volume Information' --stats "$src" "$dst"
 end
 
 ## Finds projects for backup purposes.
@@ -108,7 +108,7 @@ function _make_7zz_backup --argument-names basedir local_fn remote_fn source
   rm -f "$remote_fn"
   
   # Create a new backup.
-  7zz a "$local_fn" -y -bsp1 -bso0 -snl -snh -bb0 -mx5 -xr!node_modules -xr!.DS_Store "$source"
+  7zz a "$local_fn" -y -bsp1 -bso0 -snl -snh -bb0 -mx5 -xr!node_modules -xr!.DS_Store -x!"System Volume Information" "$source"
 
   # Grab the modified date of the source directory, and set the destination file to this same date.
   set source_modified (_get_last_modified "$source")
