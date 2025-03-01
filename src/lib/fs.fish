@@ -5,6 +5,8 @@
 ##
 ## Functions for simplifying common filesystem tasks.
 
+set _tab (echo -e "\t")
+
 ## Prints the size of a file in bytes
 function _filesize_b --argument-names filepath
   stat -f%z "$filepath"
@@ -12,7 +14,7 @@ end
 
 ## Prints a human readable filesize
 function _filesize --argument-names filepath
-  ls -la "$filepath" | cut -f2 -d' '
+  du -sh "$filepath" | string trim | cut -f1 -d"$_tab"
 end
 
 ## Returns number of lines in a file as an integer
