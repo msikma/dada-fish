@@ -1,7 +1,7 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
-function yt_audio --description "Archives audio from Youtube"
+function yt_audio --description "Archives audio from various sites"
   ! _require_cmd "yt-dlp"; and return 1
 
   # If the first argument is not a URL, assume it's the audio format.
