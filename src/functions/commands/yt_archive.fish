@@ -65,6 +65,9 @@ function yt_archive --description "Archives videos from various sites"
     rm "_log.txt"
   
     if grep -q "has already been recorded in the archive" "log.txt"
+      echo "yt_archive: info: This video has already been downloaded."
+      echo "If you want to download it again, run the following:"
+      echo (set_color blue)"yt_archive"(set_color cyan)" -na "(set_color yellow)"\"$arg\""(set_color normal)
       popd
       if [ -d "$temp" ]
         rm -rf "$temp"
@@ -78,15 +81,15 @@ function yt_archive --description "Archives videos from various sites"
       continue
     else
       # Reformat the json files.
-      for n in (find . -type f -maxdepth 1 -mindepth 1 -iname "*.json")
-        set json (basename "$n")
+      for file in (find . -type f -maxdepth 1 -mindepth 1 -iname "*.json")
+        set json (basename "$file")
         mv "$json" "_$json"
         cat "_$json" | jq > "$json"
         rm "_$json"
       end
 
       # Create a filename for the target directory.
-      set info_json (find . -type f -maxdepth 1 -mindepth 1 -iname "*.info.json" | head -n 1)
+      set info_json (_ytdlp_find_info_json ".")
       if [ -z "$info_json" -o ! -e "$info_json" ]
         echo "yt_archive: error: yt-dlp did not produce an .info.json file" 1>&2
         echo "temp directory is preserved: $temp"
@@ -94,6 +97,11 @@ function yt_archive --description "Archives videos from various sites"
         continue
       end
       set yt_dirname (_ytdlp_get_name "$info_json")
+
+      # Rename .description to .description.txt, purely for ease of use.
+      for file in (find . -type f -maxdepth 1 -mindepth 1 -iname "*.description")
+        mv "$file" "$file.txt"
+      end
 
       # Move all files into the target directory.
       mkdir "$yt_dirname"
