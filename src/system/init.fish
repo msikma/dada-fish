@@ -23,8 +23,8 @@ end
 
 ## Initializes only the things needed for a daemon run.
 function _dada_daemon_init
-  ! _require_cmd "gdate"; and return 1
   _dada_base_init
+  ! _require_cmd "gdate"; and return 1
   _ensure_cache_vars
   _ensure_db
   _ensure_bin_cache
