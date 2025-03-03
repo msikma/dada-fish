@@ -3,7 +3,7 @@
 
 ## Replaces non-filename characters with underscore and trims.
 function _sanitize_filename_part --argument-names string
-  echo "$string" | string replace -ra '[/\\:*?"<>|]' '_' | string replace -ra '\s+' ' ' | string trim -c ' .'
+  echo "$string" | string replace -ra '[/\\:*?"<>|]' '_' | string replace -ra '_+' '_' | string replace -ra '\s+' ' ' | string trim -c ' .'
 end
 
 ## Sanitizes a filename.

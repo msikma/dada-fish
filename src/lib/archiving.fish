@@ -29,5 +29,4 @@ function _ytdlp_find_info_json --argument-names dir
     )
     echo "$sorted[1]"
   end
-
 end
