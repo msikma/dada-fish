@@ -1,3 +1,5 @@
+#!/usr/bin/env fish
+
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
