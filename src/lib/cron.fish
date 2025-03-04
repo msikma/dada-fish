@@ -20,7 +20,7 @@ function _run_cron_scripts
     set script_last_run (_get_cron_time "$base")
     set script_interval (_get_cron_interval "$script")
     if _should_run_scron_script "$script_last_run" "$script_interval"
-      echo "["(date +"%Y-%m-%d %H:%M:%S %Z")"] dada-fish: running cron script: $script"
+      echo "["(date +"%Y-%m-%d %H:%M:%S %Z")"] dada-fish: running cron script: $script (last run: $script_last_run; interval: $script_interval)"
       source $script
       _set_cron_time_now "$base"
     end
