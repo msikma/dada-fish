@@ -26,7 +26,8 @@ function yt_archive --description "Archives videos from various sites"
   end
 
   # Disables the download archive in case we want to redownload something.
-  set arg_dl_archive "--download-archive" "$DADA_CACHE/yt_archive.txt"
+  set yt_archive_file "$DADA_CACHE/yt_archive.txt"
+  set arg_dl_archive "--download-archive" "$yt_archive_file"
   if contains -- "-na" $argv
     set arg_dl_archive
   end
@@ -51,17 +52,18 @@ function yt_archive --description "Archives videos from various sites"
     pushd "$temp"
 
     echo "[yt_archive] Timestamp: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
-    yt-dlp --ignore-errors --add-metadata --write-description --write-info-json \
+    yt-dlp -v --ignore-errors --add-metadata --write-description --write-info-json \
       --write-annotations --write-subs --write-thumbnail --embed-thumbnail --all-subs \
       --embed-subs --sub-langs all --get-comments --color always \
-      --parse-metadata "%(title)s:%(meta_title)s" \
-      --parse-metadata "%(uploader)s:%(meta_artist)s" \
       $arg_dl_archive \
       $arg_cookies \
       "$arg" 2>&1 | tee -a "_log.txt"
 
     # Strip colors and convert carriage returns for the logfile.
-    perl -pe 's/\e\[[0-9;]*[mGKH]//g' "_log.txt" | tr '\r' '\n' > "log.txt"
+    perl -pe 's/\e\[[0-9;]*[mGKH]//g' "_log.txt" | \
+      tr '\r' '\n' | \
+      string replace -a "$yt_archive_file" "<\$download_archive>" | \
+      string replace -a ~ "<\$homedir>" > "log.txt"
     rm "_log.txt"
   
     if grep -q "has already been recorded in the archive" "log.txt"
