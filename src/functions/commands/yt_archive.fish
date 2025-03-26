@@ -1,11 +1,14 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
+set YT_ARCHIVE_VERSION "1.0.1"
+
 function _yt_archive_usage
   echo "usage: yt_archive [-h|--help] [-na] [-nc] URL…"
   echo ""
   echo "Arguments:"
   echo "  --help, -h    prints usage information"
+  echo "  -a            downloads audio streams only"
   echo "  -na           no download archive check (redownload)"
   echo "  -nc           no browser cookies"
 end
@@ -36,6 +39,14 @@ function yt_archive --description "Archives videos from various sites"
   if contains -- "-nc" $argv
     set arg_cookies
   end
+  # Download files either as video or as audio.
+  set arg_format "--format" "bestvideo*+bestaudio/best"
+  set arg_convert_thumbnail
+  if contains -- "-a" $argv
+    set arg_format "--format" "bestaudio"
+    # Also, convert the thumbnail to jpg, which is more compatible.
+    set arg_convert_thumbnail "--convert-thumbnail" "jpg"
+  end
 
   # Run yt-dlp on all given urls.
 
@@ -51,12 +62,14 @@ function yt_archive --description "Archives videos from various sites"
 
     pushd "$temp"
 
-    echo "[yt_archive] Timestamp: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
+    echo "[yt_archive v$YT_ARCHIVE_VERSION] Start: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
     yt-dlp -v --ignore-errors --add-metadata --write-description --write-info-json \
       --write-annotations --write-subs --write-thumbnail --embed-thumbnail --all-subs \
       --embed-subs --sub-langs all --get-comments --color always \
       $arg_dl_archive \
       $arg_cookies \
+      $arg_format \
+      $arg_convert_thumbnail \
       "$arg" 2>&1 | tee -a "_log.txt"
 
     # Strip colors and convert carriage returns for the logfile.
@@ -85,9 +98,12 @@ function yt_archive --description "Archives videos from various sites"
       # Reformat the json files.
       for file in (find . -type f -maxdepth 1 -mindepth 1 -iname "*.json")
         set json (basename "$file")
-        mv "$json" "_$json"
-        cat "_$json" | jq > "$json"
-        rm "_$json"
+        set json_temp (mktemp)
+        if jq . "$file" > "$json_temp" 2>/dev/null
+          mv "$json_temp" "$json"
+        else
+          rm "$json_temp"
+        end
       end
 
       # Create a filename for the target directory.
@@ -99,6 +115,10 @@ function yt_archive --description "Archives videos from various sites"
         continue
       end
       set yt_dirname (_ytdlp_get_name "$info_json")
+
+      # Create a .webloc file with the original url. Borrow the info_json filename for it.
+      set info_basename (basename "$info_json" .info.json)
+      _write_webloc "$arg" "$info_basename"
 
       # Rename .description to .description.txt, purely for ease of use.
       for file in (find . -type f -maxdepth 1 -mindepth 1 -iname "*.description")
