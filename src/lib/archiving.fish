@@ -1,14 +1,22 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
+# Escapes XML entities, e.g. & to &amp;
+function _escape_entities --argument-names string
+  set escaped (echo "$string" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g")
+  # Also: remove invisible control chars (except tab, newline, carriage return).
+  echo "$escaped" | tr -d '\000-\010\013\014\016-\037'
+end
+
 # Writes a .webloc file.
 function _write_webloc --argument-names url target_basename
+  set escaped (_escape_entities "$url")
   set content "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
 <plist version=\"1.0\">
 <dict>
 	<key>URL</key>
-	<string>$url</string>
+	<string>$escaped</string>
 </dict>
 </plist>"
   echo "$content" > "$target_basename.webloc"
