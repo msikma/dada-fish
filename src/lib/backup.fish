@@ -47,7 +47,6 @@ end
 ##     └ --specials       preserve special files
 ## -h, --human-readable   output numbers in a human-readable format
 ## -E, --executability    preserve the file's executability
-## -A, --acls             preserve ACLs (implies --perms)
 ## -N, --crtimes          preserve create times (newness)
 ## -S, --sparse           turn sequences of nulls into sparse blocks
 ## -8, --8-bit-output     leave high-bit chars unescaped in output
@@ -74,7 +73,7 @@ function _copy_rsync --argument-names src dst quiet delete
     set d '--delete'
   end
 
-  rsync -ahEANS8"$q" $d --progress $excl_arg --exclude=".*" --exclude="Icon*" --exclude='node_modules' --exclude='System Volume Information' --stats "$src" "$dst"
+  rsync -ahENS8"$q" $d --progress $excl_arg --exclude=".*" --exclude="Icon*" --exclude='node_modules' --exclude='System Volume Information' --stats "$src" "$dst"
 end
 
 ## Finds projects for backup purposes.
