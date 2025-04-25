@@ -4,7 +4,7 @@
 set -g YT_ARCHIVE_VERSION "1.0.1"
 
 function _yt_archive_usage
-  echo "usage: yt_archive [-h|--help] [-na] [-nc] URL…"
+  echo "usage: yt_archive [-h|--help] [-a] [-na] [-nc] URL…"
   echo ""
   echo "Arguments:"
   echo "  --help, -h    prints usage information"
