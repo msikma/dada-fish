@@ -1,6 +1,7 @@
 # Don't commit any secrets
 secrets/*
 _source/
+/.scratch
 
 # General
 .DS_Store
