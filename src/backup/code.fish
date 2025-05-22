@@ -16,10 +16,10 @@ function backup_code --description "Backs up all code projects"
   _print_backup_start $backup_type (_get_computer_name)
   echo ""
 
-  for type_dir in (find ~/"Files/Code" -type d -mindepth 1 -maxdepth 1)
+  for type_dir in (find "$DADA_CODE_BASE" -type d -mindepth 1 -maxdepth 1)
     set type (basename "$type_dir")
     echo (set_color cyan)"Code type: "(set_color yellow)"$type"(set_color normal)
-    set projects_basedir ~/"Files/Code/$type"
+    set projects_basedir "$DADA_CODE_BASE/$type"
     set remote_projects_basedir "$remote_basedir/$type"
     set projects (_find_projects "$projects_basedir")
     for n in (seq 1 3 (count $projects))

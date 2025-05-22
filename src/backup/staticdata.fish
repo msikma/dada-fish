@@ -12,8 +12,8 @@ function backup_data --description "Backs up static data files"
 
   _print_backup_start $backup_type (_get_computer_name)
 
-  _copy_rsync ~/"Files/Data/" "$basedir/Data/" "0" "1"
-  _copy_rsync ~/"Files/Storage/" "$basedir/Storage/" "0" "1"
+  _copy_rsync "$DADA_FILES_BASE/Data/" "$basedir/Data/" "0" "1"
+  _copy_rsync "$DADA_FILES_BASE/Storage/" "$basedir/Storage/" "0" "1"
 
   if test $status -ne 0
     _print_backup_error $backup_type

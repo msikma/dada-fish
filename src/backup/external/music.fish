@@ -12,7 +12,7 @@ function backup_music --description "Backs up music directory"
   _print_backup_start $backup_type (_get_computer_name)
 
 
-  _copy_rsync ~/"Files/Music/" "$target" "0" "1"
+  _copy_rsync "$DADA_FILES_BASE/Music/" "$target" "0" "1"
 
   if test $status -ne 0
     _print_backup_error $backup_type
