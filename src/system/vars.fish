@@ -29,3 +29,4 @@ set -g DADA_WORK_DIRS $DADA_WORK_DIRS ~/"Code" ~/"Work" ~/"Source"
 # Base directories for where our pertinent files are. These are always backed up.
 set -g DADA_FILES_BASE ~/"Files"
 set -g DADA_CODE_BASE "$DADA_FILES_BASE/Code"
+set -g DADA_SCRATCH_BASE "$DADA_FILES_BASE/Projects/Scratch"
