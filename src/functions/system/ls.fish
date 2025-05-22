@@ -7,6 +7,10 @@ function ls
   eza $argv
 end
 
+function lls
+  command ls $argv
+end
+
 function l
   if _is_work_dir
     set args $args "--git-repos"
