@@ -74,6 +74,24 @@ function fish_greeting
   end
 end
 
+## Writes out the prompt pwd with the last item highlighted.
+function get_prompt_pwd
+  if test "$_dada_highlight_pwd" -eq "1"
+    set prompt_dirs (string split '/' (prompt_pwd))
+    set count (count $prompt_dirs)
+    for n in (seq $count)
+      set dir "$prompt_dirs[$n]"
+      if test "$n" -eq "$count"
+        echo -n (set_color brcyan)"$dir"(set_color normal)
+      else
+        echo -n (set_color cyan)"$dir/"(set_color normal)
+      end
+    end
+  else
+    echo -n "$__fish_prompt_cwd"(prompt_pwd)"$__fish_prompt_normal"
+  end
+end
+
 ## Writes out the left side prompt.
 function fish_prompt
   if [ -n "$STY" ]
@@ -83,7 +101,8 @@ function fish_prompt
     set venv (basename "$VIRTUAL_ENV")
     set dada_vf_prompt (set_color yellow)"◰ "(set_color red)"$venv"(set_color normal)" "
   end
-  echo -n -s $_dada_left_prompt_prefix $dada_vf_prompt $dada_screen_prompt "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal" (_in_vcs_repo) "$__fish_prompt_normal" '> '
+  set prompt_pwd (get_prompt_pwd)
+  echo -n -s $_dada_left_prompt_prefix $dada_vf_prompt $dada_screen_prompt "$prompt_pwd" (_in_vcs_repo) "$__fish_prompt_normal" '> '
 end
 
 ## Writes out the right side prompt.
@@ -122,6 +141,9 @@ function _set_prompt_vars
 
   set -g __fish_prompt_cwd (set_color cyan)
   set -g __fish_prompt_normal (set_color normal)
+
+  # Highlight the last segment of the pwd.
+  set -g _dada_highlight_pwd "1"
 
   # This disablse the virtualenv prompt prefix added by bin/activate.fish.
   set -g VIRTUAL_ENV_DISABLE_PROMPT "1"
