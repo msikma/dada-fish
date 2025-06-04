@@ -19,6 +19,8 @@ function yt_archive --description "Archives videos from various sites"
   ! _require_cmd "jq"; and return 1
   ! _require_cmd "perl"; and return 1
 
+  set has_errored "0"
+
   if test (count $argv) -eq 0
     _yt_archive_usage
     return 1
@@ -92,6 +94,7 @@ function yt_archive --description "Archives videos from various sites"
     if test $status -ne 0
       echo "yt_archive: error: yt-dlp command failed with status code $status" 1>&2
       echo "temp directory is preserved: $temp"
+      set has_errored "1"
       popd
       continue
     else
@@ -111,6 +114,7 @@ function yt_archive --description "Archives videos from various sites"
       if [ -z "$info_json" -o ! -e "$info_json" ]
         echo "yt_archive: error: yt-dlp did not produce an .info.json file" 1>&2
         echo "temp directory is preserved: $temp"
+        set has_errored "1"
         popd
         continue
       end
@@ -134,6 +138,10 @@ function yt_archive --description "Archives videos from various sites"
         rm -rf "$temp"
       end
     end
+  end
+
+  if test "$has_errored" -eq "1"
+    return 1
   end
 end
 
