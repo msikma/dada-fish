@@ -43,6 +43,7 @@ function _load_daemon
   set cache_path ~/".cache"
   set config_path ~/".config"
   
+  mkdir -p (dirname "$daemon_plist")
   cat "$daemon_template" | sed -e "s@{{fish_bin}}@$fish_bin@g" -e "s@{{cache_path}}@$cache_path@g" -e "s@{{config_path}}@$config_path@g" > "$daemon_plist"
   launchctl load "$daemon_plist"
 end
