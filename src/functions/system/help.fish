@@ -28,7 +28,41 @@ function backup --description "Shows backup scripts"
   echo
 end
 
-## Prints a list of backup scripts
+function croninfo --description "Shows cron scripts"
+  echo
+  echo "Cron scripts for "(set_color green)(_get_computer_name)(set_color reset)":"
+  echo
+  _list_cron_script_info
+  echo
+end
+
+## Prints a list of active cron scripts and when they will run.
+function _list_cron_script_info
+  set -l values
+  set -l scripts (_find_cron_scripts)
+
+  set -l name_color (set_color red)
+  set -l description_color (set_color reset)
+  set -l interval_color (set_color green)
+  set -l last_run_color (set_color yellow)
+
+  for script in $scripts
+    set script_name (basename "$script")
+    set script_description (_get_cron_variable "$script" "description" "(no description)")
+    set script_interval (_duration_humanized (_get_cron_variable "$script" "interval" "$_cron_default_time"))
+    set script_last_run (_relative_timestamp "@"(_get_cron_time "$script_name"))
+    
+    set -a values "$script_name" "$script_description" "$script_interval" "$script_last_run"
+  end
+
+  _draw_table 4 \
+    "$DADA_LEFT_COL_SIZE_LARGE" (math "$DADA_RIGHT_COL_SIZE" + "$DADA_LEFT_COL_SIZE") "$DADA_LEFT_COL_SIZE" "$DADA_LEFT_COL_SIZE" \
+    "$name_color" "$description_color" "$interval_color" "$last_run_color" \
+    (set_color black)"Script name" "" (set_color black)"Runs every" (set_color black)"Last run" \
+    $values
+end
+
+## Prints a list of backup scripts.
 function _list_backup_scripts
   set lines
   set reset (set_color reset)
@@ -178,3 +212,4 @@ _register_command system "help"
 _register_command system "aliases"
 _register_command system "scripts"
 _register_command system "backup"
+_register_command system "croninfo"

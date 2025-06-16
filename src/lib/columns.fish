@@ -1,6 +1,51 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
+## Draws a table, given a col_count value (n), followed by:
+##   - n width values,
+##   - n color values, and finally
+##   - n * m values for m rows.
+## Columns are truncated with ellipsis if they exceed their column width,
+## and widths are determined by a value's visual width (taking escape sequences into account).
+function _draw_table
+  set -l col_count $argv[1]
+  set -l rest $argv[2..-1]
+
+  # Column widths and colors.
+  set -l widths $rest[1..$col_count]
+  set -l colors $rest[(math "$col_count + 1")..(math "$col_count * 2")]
+
+  # Everything else is row data.
+  set -l data $rest[(math "$col_count * 2 + 1")..-1]
+  set -l total_rows (math "("(count $data)")" / $col_count)
+
+  for row_index in (seq 0 (math "$total_rows - 1"))
+    for col_index in (seq 1 $col_count)
+      set -l global_index (math "$row_index * $col_count + $col_index")
+
+      set -l value $data[$global_index]
+      set -l color $colors[$col_index]
+      set -l width $widths[$col_index]
+
+      set -l value_length (string length -- $value)
+      set -l value_width (string length --visible -- $value)
+      set -l value_overhead (math "$value_length - $value_width")
+
+      if test $value_width -gt $width
+        set -l cut_length (math "$width - 1 + $value_overhead")
+        set -l trimmed (string sub -l $cut_length -- "$value")
+        set value "$trimmed…"
+      else
+        set -l padding (string repeat -n (math "$width - $value_width") -- " ")
+        set value "$value$padding"
+      end
+
+      printf "$color""%s" "$value"(set_color normal)
+    end
+    echo
+  end
+end
+
 ## Draws a series of key-value columns.
 ## These should be colorized via _add_col_color first.
 function _draw_kv_columns --argument-names col_count
