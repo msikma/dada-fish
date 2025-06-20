@@ -15,7 +15,7 @@ function ico_pack --argument-names infile --description "Converts: .icoset → .
     echo "ico_pack: error: \"$basedir.ico\" already exists."
     return 1
   end
-  set png_files (find "$infile" -name "*.png" | sort -V)
+  set png_files (find "$infile" -name "*.png" ! -name "_*" | sort -V)
   set valid_sizes 16 24 32 48 64 96 128 192 256
   for file in $png_files
     set base (basename "$file")
