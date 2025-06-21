@@ -4,12 +4,13 @@
 set -g YT_ARCHIVE_VERSION "1.0.1"
 
 function _yt_archive_usage
-  echo "usage: yt_archive [-h|--help] [-a] [-na] [-nc] URL…"
+  echo "usage: yt_archive [-h|--help] [-a] [-na] [-ar:PATH] [-nc] URL…"
   echo ""
   echo "Arguments:"
   echo "  --help, -h    prints usage information"
   echo "  -a            downloads audio streams only"
   echo "  -na           no download archive check (redownload)"
+  echo "  -ar:PATH      path to custom download archive"
   echo "  -nc           no browser cookies"
 end
 
@@ -25,27 +26,38 @@ function yt_archive --description "Archives videos from various sites"
     _yt_archive_usage
     return 1
   end
+  
   if contains -- "-h" $argv || contains -- "--help" $argv
     _yt_archive_usage
     return 0
   end
 
-  # Disables the download archive in case we want to redownload something.
+  # Sets the default archive file, and overrides it if an -ar:PATH option is passed.
   set yt_archive_file "$DADA_CACHE/yt_archive.txt"
+  set ar_match (string match -r -- "-ar:(.+)" $argv)
+  if test -n "$ar_match[2]"
+    set yt_archive_file $ar_match[2]
+  end
   set arg_dl_archive "--download-archive" "$yt_archive_file"
+
+  # Disables the download archive in case we want to redownload something.
   if contains -- "-na" $argv
     set arg_dl_archive
   end
+
   # Disables browser cookies.
   set arg_cookies "--cookies-from-browser" "firefox"
   if contains -- "-nc" $argv
     set arg_cookies
   end
+
   # Download files either as video or as audio.
   set arg_format "--format" "bestvideo*+bestaudio/best"
+  set arg_audio
   set arg_convert_thumbnail
   if contains -- "-a" $argv
     set arg_format "--format" "bestaudio"
+    set arg_audio "--extract-audio" "--audio-format" "best"
     # Also, convert the thumbnail to jpg, which is more compatible.
     set arg_convert_thumbnail "--convert-thumbnail" "jpg"
   end
@@ -71,6 +83,7 @@ function yt_archive --description "Archives videos from various sites"
       $arg_dl_archive \
       $arg_cookies \
       $arg_format \
+      $arg_audio \
       $arg_convert_thumbnail \
       "$arg" 2>&1 | tee -a "_log.txt"
 
