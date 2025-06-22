@@ -18,17 +18,17 @@ function _yt_extract_chapters --argument filename
   set -l non_timestamp_lines 0
 
   for line in (cat $filename)
-    set line (string trim "$line")
+    set line (string trim -- "$line")
 
     # Match timestamp at the end of the line, e.g. 0:00, 1:01:20.
-    if string match -qr '\b([0-9]{1,2}:)?[0-5]?[0-9]:[0-5][0-9]$' -- "$line"
+    if string match -qr '^([0-9]{1,2}:)?[0-5]?[0-9]:[0-5][0-9](\s*[-–—]\s*|\s+)' -- "$line"
       # Reset counters; we're inside of the timestamps section.
       set non_timestamp_lines 0
       set saw_timestamp 1
 
       # Extract timestamp (last word) and label (rest of line).
-      set -l timestamp (string match -r '([0-9]{1,2}:)?[0-5]?[0-9]:[0-5][0-9]$' -- "$line")
-      set -l label (string replace "$timestamp" "" -- "$line" | string trim)
+      set -l timestamp (string match -r '^([0-9]{1,2}:)?[0-5]?[0-9]:[0-5][0-9]' -- "$line")[1]
+      set -l label (string replace -r '^([0-9]{1,2}:)?[0-5]?[0-9]:[0-5][0-9](\s*[-–—]\s*|\s+)' "" -- "$line" | string trim)
 
       set -a result "$label" "$timestamp"
     else if test $saw_timestamp -eq 1
@@ -88,13 +88,14 @@ function _yt_split_by_chapters --argument-names input_file description_file
 
     set start_time $timestamp
     set end_time $segments[(math min (math $n + 3), "$count")]
+    set args "-y" "-hide_banner" "-loglevel" "error"
 
     if test $idx -eq 1
-      ffmpeg -y -i "$input_file" -to "$end_time" -c copy "$output_file"
+      ffmpeg $args -i "$input_file" -to "$end_time" -c copy "$output_file"
     else if test $idx -eq $last
-      ffmpeg -y -ss "$start_time" -i "$input_file" -c copy "$output_file"
+      ffmpeg $args -ss "$start_time" -i "$input_file" -c copy "$output_file"
     else
-      ffmpeg -y -ss "$start_time" -to "$end_time" -i "$input_file" -c copy "$output_file"
+      ffmpeg $args -ss "$start_time" -to "$end_time" -i "$input_file" -c copy "$output_file"
     end
 
     set idx (math $idx + 1)
