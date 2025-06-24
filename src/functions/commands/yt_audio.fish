@@ -22,10 +22,20 @@ function yt_audio --description "Archives audio from various sites"
     set -a args "-ar:$yt_archive_file"
     if contains -- "-na" $argv; set -a args "-na"; end
     if contains -- "-nc" $argv; set -a args "-nc"; end
+    if test -z $argv[1]
+      _yt_audio_usage
+      return 1
+    end
+    set files
     for n in (seq (count $argv))
       if ! string match -q -- "-*" "$argv[$n]"
         set -a args "$argv[$n]"
+        set -a files "$argv[$n]"
       end
+    end
+    if test -z $files[1]
+      _yt_audio_usage
+      return 1
     end
     yt_archive $args
     return
