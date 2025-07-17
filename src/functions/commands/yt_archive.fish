@@ -9,6 +9,7 @@ function _yt_archive_usage
   echo "Arguments:"
   echo "  --help, -h    prints usage information"
   echo "  -a            downloads audio streams only"
+  echo "  -p            downloads as playlist (with index numbers)"
   echo "  -na           no download archive check (redownload)"
   echo "  -ar:PATH      path to custom download archive"
   echo "  -nc           no browser cookies"
@@ -51,6 +52,12 @@ function yt_archive --description "Archives videos from various sites"
     set arg_cookies
   end
 
+  # Add the index number to the output template if we're downloading as playlist.
+  set arg_output_template "-o" "%(title)s [%(id)s].%(ext)s"
+  if contains -- "-p" $argv
+    set arg_output_template "-o" "%(playlist_index)s %(title)s [%(id)s].%(ext)s"
+  end
+
   # Download files either as video or as audio.
   set arg_format "--format" "bestvideo*+bestaudio/best"
   set arg_audio
@@ -85,6 +92,7 @@ function yt_archive --description "Archives videos from various sites"
       $arg_format \
       $arg_audio \
       $arg_convert_thumbnail \
+      $arg_output_template \
       "$arg" 2>&1 | tee -a "_log.txt"
 
     # Strip colors and convert carriage returns for the logfile.

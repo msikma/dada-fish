@@ -7,6 +7,7 @@ function _yt_audio_usage
   echo "Arguments:"
   echo "  --help, -h    prints usage information"
   echo "  -na           no download archive check (redownload)"
+  echo "  -p            downloads as playlist (with index numbers)"
   echo "  -nc           no browser cookies"
   echo "  -fo           file only (no archiving files)"
 end
@@ -22,6 +23,7 @@ function yt_audio --description "Archives audio from various sites"
     set -a args "-ar:$yt_archive_file"
     if contains -- "-na" $argv; set -a args "-na"; end
     if contains -- "-nc" $argv; set -a args "-nc"; end
+    if contains -- "-p" $argv; set -a args "-p"; end
     if test -z $argv[1]
       _yt_audio_usage
       return 1
@@ -49,6 +51,10 @@ function yt_audio --description "Archives audio from various sites"
   if contains -- "-nc" $argv
     set arg_cookies
   end
+  set arg_output_template "-o" "%(title)s [%(id)s].%(ext)s"
+  if contains -- "-p" $argv
+    set arg_output_template "-o" "%(playlist_index)s %(title)s [%(id)s].%(ext)s"
+  end
   for n in (seq (count $argv))
     set arg $argv[$n]
     if string match -q -- "-*" "$arg"
@@ -59,6 +65,7 @@ function yt_audio --description "Archives audio from various sites"
       --embed-thumbnail --autonumber-start "$n" --audio-format "best" \
       $arg_dl_archive \
       $arg_cookies \
+      $arg_output_template \
       "$arg"
   end
 end
