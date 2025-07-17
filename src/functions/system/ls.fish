@@ -20,7 +20,7 @@ function l
 end
 
 function ll
-  eza -lah --git
+  eza -lahB --git
 end
 
 function le
