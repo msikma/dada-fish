@@ -69,13 +69,13 @@ function _relative_timestamp --argument-names timestamp
 
   set value # amount in time units
   set unit # e.g. "minute"
-  set dir # "ago" or "from now"
+  set dir # future or past
 
   if [ $diff -lt 0 ]
-    set dir "from now"
+    set dir "future"
     set diff (math "-$diff")
   else
-    set dir "ago"
+    set dir "past"
   end
 
   if [ $diff -lt 60 ]
@@ -106,7 +106,11 @@ function _relative_timestamp --argument-names timestamp
     set unit "$unit""s"
   end
   
-  echo "$value $unit $dir"
+  if [ $dir = "future" ]
+    echo "in $value $unit"
+  else
+    echo "$value $unit ago"
+  end
 end
 
 ## Converts seconds to a longer time unit.

@@ -45,20 +45,37 @@ function _list_cron_script_info
   set -l description_color (set_color reset)
   set -l interval_color (set_color green)
   set -l last_run_color (set_color yellow)
+  set -l next_run_color (set_color yellow)
 
   for script in $scripts
     set script_name (basename "$script")
-    set script_description (_get_cron_variable "$script" "description" "(no description)")
-    set script_interval (_duration_humanized (_get_cron_variable "$script" "interval" "$_cron_default_time"))
-    set script_last_run (_relative_timestamp "@"(_get_cron_time "$script_name"))
+    set cron_interval (_get_cron_variable "$script" "interval" "$_cron_default_time")
+    set cron_time (_get_cron_time "$script_name")
+
+    if test "$cron_time" = "-"
+      set script_last_run "Never"
+      set script_next_run "Soon"
+    else
+      set cron_next (math "$cron_time" + "$cron_interval")
+      set cron_diff (math "$cron_next" - (date +%s))
+      set script_last_run (_relative_timestamp "@$cron_time")
+      if test "$cron_diff" -lt 0
+        set script_next_run "Running"
+      else
+        set script_next_run (_relative_timestamp "@$cron_next")
+      end
+    end
     
-    set -a values "$script_name" "$script_description" "$script_interval" "$script_last_run"
+    set script_description (_get_cron_variable "$script" "description" "(no description)")
+    set script_interval (_duration_humanized "$cron_interval")
+    
+    set -a values "$script_name" "$script_description" "$script_interval" "$script_last_run" "$script_next_run"
   end
 
-  _draw_table 4 \
-    "$DADA_LEFT_COL_SIZE_LARGE" (math "$DADA_RIGHT_COL_SIZE" + "$DADA_LEFT_COL_SIZE") "$DADA_LEFT_COL_SIZE" "$DADA_LEFT_COL_SIZE" \
-    "$name_color" "$description_color" "$interval_color" "$last_run_color" \
-    (set_color black)"Script name" "" (set_color black)"Runs every" (set_color black)"Last run" \
+  _draw_table 5 \
+    "$DADA_LEFT_COL_SIZE_LARGE" (math "$DADA_RIGHT_COL_SIZE" + "$DADA_LEFT_COL_SIZE") "$DADA_LEFT_COL_SIZE" "$DADA_LEFT_COL_SIZE" "$DADA_LEFT_COL_SIZE" \
+    "$name_color" "$description_color" "$interval_color" "$last_run_color" "$next_run_color" \
+    (set_color black)"Script name" "" (set_color black)"Runs every" (set_color black)"Last run" (set_color black)"Next run" \
     $values
 end
 
