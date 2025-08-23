@@ -62,11 +62,14 @@ function yt_archive --description "Archives videos from various sites"
   set arg_format "--format" "bestvideo*+bestaudio/best"
   set arg_audio
   set arg_convert_thumbnail
+  set arg_merge_output_format
   if contains -- "-a" $argv
     set arg_format "--format" "bestaudio"
     set arg_audio "--extract-audio" "--audio-format" "best"
     # Also, convert the thumbnail to jpg, which is more compatible.
     set arg_convert_thumbnail "--convert-thumbnail" "jpg"
+  else
+    set arg_merge_output_format "--merge-output-format" "mp4"
   end
 
   # Run yt-dlp on all given urls.
@@ -92,6 +95,7 @@ function yt_archive --description "Archives videos from various sites"
       $arg_format \
       $arg_audio \
       $arg_convert_thumbnail \
+      $arg_merge_output_format \
       $arg_output_template \
       "$arg" 2>&1 | tee -a "_log.txt"
 
