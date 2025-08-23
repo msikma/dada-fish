@@ -21,7 +21,7 @@ function backup_homedir --description "Backs up various parts of home"
   for dir in (find ".cache" -mindepth 1 -maxdepth 1 -type d -exec du -sm {} + | awk '$1 > 80 {print $2}')
     set -a excluded_dirs "-xr!"(basename "$dir")
   end
-  7zz a "$temp/Dotfiles.7z" -y -bsp1 -bso0 -snl -snh -bb0 -mx5 -xr!node_modules -xr!.DS_Store $excluded_dirs ".config" ".cache" ".ssh" ".gitignore-global" ".gitconfig"
+  7zz a "$temp/Dotfiles.7z" -y -bsp1 -bso0 -snl -snh -bb0 -mx5 -xr!node_modules -xr!.DS_Store $excluded_dirs ".config" ".cache" ".ssh" ".cron" ".gitignore-global" ".gitconfig"
   popd
   if [ -e "$temp/Dotfiles.7z" ]
     rm -f "$basedir/Home/Dotfiles.7z"
