@@ -6,10 +6,10 @@
 # Set the source root directory for Dada Fish.
 set -g DADA_FISH (status current-dirname)
 
+source "$DADA_FISH/system/vars.fish"
 source "$DADA_FISH/system/init.fish"
 source "$DADA_FISH/system/log.fish"
 source "$DADA_FISH/system/setup.fish"
-source "$DADA_FISH/system/vars.fish"
 
 source "$DADA_FISH/lib/archiving.fish"
 source "$DADA_FISH/lib/cron.fish"
