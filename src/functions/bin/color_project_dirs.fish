@@ -1,6 +1,7 @@
 #!/usr/bin/env fish
 
 set curr (dirname (status --current-filename))
+source "$curr/../../system/vars.fish"
 source "$curr/../../env/plugins/dada-icons.fish"
 source "$curr/../../lib/os.fish"
 source "$curr/../../lib/icons.fish"
@@ -78,7 +79,7 @@ function main --argument-names arg1 arg2
     if [ "$dryrun" -eq 0 -a "$type" != "-" ]
       set target_icon
       for n in (seq (count $icons))
-        set icon_path $icons[$n]
+        set icon_path $icons[(math $n + 1)]
         set name (basename "$icon_path" ".icns")
         if [ "$name" = "$icon" ]
           set target_icon "$icon_path"
