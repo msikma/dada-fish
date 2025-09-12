@@ -10,7 +10,7 @@ set -gx DADA_CRON ~/".cron/dada-fish"
 set -gx DADA_DB "$DADA_CACHE/db.sqlite"
 
 # Directory where the repo is located.
-set -gx DADA_FISH_REPO (realpath "$DADA_FISH/../.git")
+set -gx DADA_FISH_REPO (realpath (status current-dirname)"/../../.git")
 
 # Size of the columns in help lists.
 set -g DADA_LEFT_COL_SIZE 17
