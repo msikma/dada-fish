@@ -47,7 +47,12 @@ function yt_audio --description "Archives audio from various sites"
   if contains -- "-na" $argv
     set arg_dl_archive
   end
-  set arg_cookies "--cookies-from-browser" "firefox"
+
+  if test -f "$DADA_CACHE/cookies.firefox-private.txt"
+    set arg_cookies "--cookies" "$DADA_CACHE/cookies.firefox-private.txt"
+  else
+    set arg_cookies "--cookies-from-browser" "firefox"
+  end
   if contains -- "-nc" $argv
     set arg_cookies
   end
@@ -60,7 +65,7 @@ function yt_audio --description "Archives audio from various sites"
     if string match -q -- "-*" "$arg"
       continue
     end
-    yt-dlp --ignore-errors --format "bestaudio" --extract-audio \
+    yt-dlp --format "bestaudio" --extract-audio \
       --convert-thumbnail jpg --add-metadata --embed-metadata \
       --embed-thumbnail --autonumber-start "$n" --audio-format "best" \
       $arg_dl_archive \

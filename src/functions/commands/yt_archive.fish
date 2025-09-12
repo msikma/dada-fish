@@ -46,8 +46,13 @@ function yt_archive --description "Archives videos from various sites"
     set arg_dl_archive
   end
 
+  # See <https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies>.
+  if test -f "$DADA_CACHE/cookies.firefox-private.txt"
+    set arg_cookies "--cookies" "$DADA_CACHE/cookies.firefox-private.txt"
+  else
+    set arg_cookies "--cookies-from-browser" "firefox"
+  end
   # Disables browser cookies.
-  set arg_cookies "--cookies-from-browser" "firefox"
   if contains -- "-nc" $argv
     set arg_cookies
   end
@@ -87,7 +92,7 @@ function yt_archive --description "Archives videos from various sites"
     pushd "$temp"
 
     echo "[yt_archive v$YT_ARCHIVE_VERSION] Start: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
-    yt-dlp -v --ignore-errors --add-metadata --write-description --write-info-json \
+    yt-dlp -v --add-metadata --write-description --write-info-json \
       --write-annotations --write-subs --write-thumbnail --embed-thumbnail --all-subs \
       --embed-subs --sub-langs all --get-comments --no-playlist --color always \
       $arg_dl_archive \
