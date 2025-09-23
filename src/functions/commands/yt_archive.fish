@@ -93,7 +93,7 @@ function yt_archive --description "Archives videos from various sites"
 
     echo "[yt_archive v$YT_ARCHIVE_VERSION] Start: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
     yt-dlp -v --add-metadata --write-description --write-info-json \
-      --write-annotations --write-subs --write-thumbnail --embed-thumbnail --all-subs \
+      --write-subs --write-thumbnail --embed-thumbnail --all-subs \
       --embed-subs --sub-langs all,live_chat --get-comments --no-playlist --color always \
       $arg_dl_archive \
       $arg_cookies \
