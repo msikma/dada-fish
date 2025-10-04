@@ -1,7 +1,7 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
-set -g YT_ARCHIVE_VERSION "1.0.1"
+set -g YT_ARCHIVE_VERSION "1.0.2"
 
 function _yt_archive_usage
   echo "usage: yt_archive [-h|--help] [-a] [-na] [-ar:PATH] [-nc] URL…"
@@ -77,6 +77,9 @@ function yt_archive --description "Archives videos from various sites"
     set arg_merge_output_format "--merge-output-format" "mp4"
   end
 
+  set arg_subs "--write-subs" "--all-subs" "--embed_subs"
+  set arg_sub_langs "--sub-langs" "all,live_chat"
+
   # Run yt-dlp on all given urls.
 
   for arg in $argv
@@ -91,10 +94,22 @@ function yt_archive --description "Archives videos from various sites"
 
     pushd "$temp"
 
-    echo "[yt_archive v$YT_ARCHIVE_VERSION] Start: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
+    echo "[yt_archive] (v$YT_ARCHIVE_VERSION) Start: "(date +"%Y-%m-%d %H:%M:%S %Z") > "_log.txt"
+
+    # FIXME: Special fix: until <https://github.com/yt-dlp/yt-dlp/pull/1551> is merged,
+    # we cannot include subs for Twitch as it causes the script to error out.
+    # See also: <https://github.com/yt-dlp/yt-dlp/issues/5747> and <https://github.com/yt-dlp/yt-dlp/issues/11123>
+    if string match -q "*twitch.tv/*" "$arg"
+      echo "[yt_archive] warning: not including twitch.tv subs until PR 1551 is merged" >> "_log.txt"
+      set arg_subs
+      set arg_sub_langs
+    end
+
     yt-dlp -v --add-metadata --write-description --write-info-json \
-      --write-subs --write-thumbnail --embed-thumbnail --all-subs \
-      --embed-subs --sub-langs all,live_chat --get-comments --no-playlist --color always \
+      --write-thumbnail --embed-thumbnail --get-comments --no-playlist \
+      --color always \
+      $arg_subs \
+      $arg_sub_langs \
       $arg_dl_archive \
       $arg_cookies \
       $arg_format \
