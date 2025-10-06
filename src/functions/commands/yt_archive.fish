@@ -77,7 +77,7 @@ function yt_archive --description "Archives videos from various sites"
     set arg_merge_output_format "--merge-output-format" "mp4"
   end
 
-  set arg_subs "--write-subs" "--all-subs" "--embed_subs"
+  set arg_subs "--write-subs" "--all-subs" "--embed-subs"
   set arg_sub_langs "--sub-langs" "all,live_chat"
 
   # Run yt-dlp on all given urls.
@@ -107,7 +107,7 @@ function yt_archive --description "Archives videos from various sites"
 
     yt-dlp -v --add-metadata --write-description --write-info-json \
       --write-thumbnail --embed-thumbnail --get-comments --no-playlist \
-      --color always \
+      --live-from-start --color always \
       $arg_subs \
       $arg_sub_langs \
       $arg_dl_archive \
