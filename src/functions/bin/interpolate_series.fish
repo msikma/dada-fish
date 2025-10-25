@@ -3,6 +3,18 @@
 set -g USAGE 'usage: interpolate_series PATH'
 set -g RIFE_MODEL "rife-models/rife-v4.6"
 
+function _require_cmd --argument-names cmd errmsg
+  if [ ! (command -v "$cmd") ]
+    if [ -z "$errmsg" ]
+      echo "error: required command is missing: $cmd"
+    else
+      echo "$errmsg"
+    end
+    return 1
+  end
+  return 0
+end
+
 function get_outpath --argument-names inpath
   set inpath_parent (dirname "$inpath")
   set inpath_base (basename "$inpath")
