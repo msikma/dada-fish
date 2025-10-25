@@ -44,6 +44,46 @@ function _get_last_modified --argument-names filepath
   gstat -c %Y $filepath
 end
 
+## Prints the EFI device, e.g. disk0s1.
+function _find_efi_device
+  # Determine what the boot device is.
+  set boot_dev (diskutil info / | awk -F: '/Device Identifier/ {gsub(/ /,"",$2); print $2}')
+
+  if test -z "$boot_dev"
+    echo "_find_efi_device: could not determine boot device" >&2
+    return 1
+  end
+
+  # Follow APFS physical stores.
+  while true
+    set phys (diskutil info "$boot_dev" | awk -F: '/APFS Physical Store/ {gsub(/ /,"",$2); print $2}')
+    if test -n "$phys"
+      set boot_dev "$phys"
+      continue
+    end
+    break
+  end
+
+  # Find the physical disk.
+  set disk (diskutil info "$boot_dev" | awk -F: '/Part of Whole/ {gsub(/ /,"",$2); print $2}')
+  if test -z "$disk"
+    set disk (echo "$boot_dev" | sed -E 's/s[0-9]+$//')
+  end
+
+  if test -z "$disk"
+    echo "_find_efi_device: could not determine physical disk for $boot_dev" >&2
+    return 1
+  end
+
+  set efi (diskutil list "$disk" | awk '/EFI/ {print $NF; exit}')
+
+  if test -z "$efi"
+    echo "_find_efi_device: no EFI partition found on $disk" >&2
+    return 1
+  end
+
+  echo $efi
+end
 
 ## Returns disk usage in human readable format
 function _get_disk_usage
