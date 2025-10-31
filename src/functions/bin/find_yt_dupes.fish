@@ -30,4 +30,4 @@ end
 
 main $argv
 
-#_dada_fish _register_bin regular "find_yt_dupes" "NEW_DIR OLD_DIR" "find_yt_dupes.fish" "Finds Youtube archive duplicates"
+#_dada_fish _register_bin regular "find_yt_dupes" "new old" "find_yt_dupes.fish" "Finds Youtube archive duplicates"
