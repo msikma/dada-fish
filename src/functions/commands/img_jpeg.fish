@@ -2,7 +2,7 @@
 # © MIT license
 
 # JPEG conversion quality (0-100).
-set -g _jpeg_quality 80
+set -g _jpeg_quality 90
 
 function img_jpeg --description "Converts images to JPEG"
   ! _require_cmd "magick"; and return 1
