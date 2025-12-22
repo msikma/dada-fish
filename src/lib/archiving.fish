@@ -25,12 +25,17 @@ end
 ## Returns a filename (or directory name) suggestion for a yt-dlp info.json file.
 function _ytdlp_get_name --argument-names info_json_fn
   ! _require_cmd "jq"; and return 1
-  set title (_sanitize_filename (cat "$info_json_fn" | jq -r ".title"))
-  set uploader (_sanitize_filename (cat "$info_json_fn" | jq -r ".uploader"))
-  set upload_date (_sanitize_filename (cat "$info_json_fn" | jq -r ".upload_date"))
-  set id (_sanitize_filename (cat "$info_json_fn" | jq -r ".id"))
+  set title (_sanitize_string (cat "$info_json_fn" | jq -r ".title"))
+  set uploader (_sanitize_string (cat "$info_json_fn" | jq -r ".uploader"))
+  set upload_date (_sanitize_string (cat "$info_json_fn" | jq -r ".upload_date"))
+  set id (_ytdlp_get_id "$info_json_fn")
   # E.g. 20190101 [uploader name] My Video Title [kOaejxdh2Mx]
-  _sanitize_filename "$upload_date [$uploader] $title [$id]"
+  echo "$upload_date [$uploader] $title [$id]"
+end
+
+## Finds the info.json's ID value.
+function _ytdlp_get_id --argument-names info_json_fn
+  _sanitize_string (cat "$info_json_fn" | jq -r ".id")
 end
 
 ## Finds the yt-dlp .info.json file in a given directory.
