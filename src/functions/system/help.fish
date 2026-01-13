@@ -211,7 +211,7 @@ function _command_label --argument-names name arg color
   if [ ! -z "$arg" ]
     for n in (string split " " $arg)
       echo -n "$color"
-      echo -n " "(set_color -ud)"$n"(set_color reset)
+      echo -n " "(set_color -u -d)"$n"(set_color reset)
     end
   end
 end
