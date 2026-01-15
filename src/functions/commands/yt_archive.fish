@@ -107,7 +107,7 @@ function yt_archive --description "Archives videos from various sites"
 
     yt-dlp -v --add-metadata --write-description --write-info-json \
       --write-thumbnail --embed-thumbnail --get-comments --no-playlist \
-      --live-from-start --color always \
+      --impersonate chrome --live-from-start --color always \
       $arg_subs \
       $arg_sub_langs \
       $arg_dl_archive \
