@@ -23,7 +23,7 @@ function yt_urls --description "Lists a URL's archivable items"
       _yt_urls_usage
       return 1
     end
-    yt-dlp --flat-playlist --print "%(webpage_url)s # %(title)s" "$argv[1]"
+    yt-dlp --flat-playlist --print "%(webpage_url)s" "$argv[1]"
   end
 end
 
