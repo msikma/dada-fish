@@ -165,6 +165,11 @@ function yt_archive --description "Archives videos from various sites"
       end
       set yt_dirname (_ytdlp_get_name "$info_json")
 
+      # Store an MD5 hash for the output file.
+      for file in (find . -type f -maxdepth 1 -mindepth 1 \( -iname "*.mp4" -o -iname "*.mkv" \))
+        md5sum "$file" > (string replace -r '\.(mp4|mkv)$' '' "$file").md5sum.txt
+      end
+
       # Create a .webloc file with the original url. Borrow the info_json filename for it.
       set info_basename (basename "$info_json" .info.json)
       _write_webloc "$arg" "$info_basename"
