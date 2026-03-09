@@ -22,9 +22,9 @@ function collect_files --argument-names dir
   for file in $files
     set processed (math $processed "+" 1)
     set percentage (math (math $processed "*" 100) "/" $total_count)
-    set ext (string split -r . "$file" | tail -n 1)
+    set ext (string split -r . "$file" | tail -n 1 | string lower)
     mkdir -p "$outdir/$ext"
-    cp "$file" "$outdir/$ext/"
+    cp -p "$file" "$outdir/$ext/"
     printf "\r"(set_color yellow)"Progress: "(set_color cyan)"%.1f%%"(set_color normal) "$percentage"
   end
   echo ""
