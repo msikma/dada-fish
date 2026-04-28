@@ -23,7 +23,7 @@ function _merge_vids
   
   set out (basename (mktemp))
   set ts_files (string join '|' $ts_files)
-  ffmpeg -i "concat:$ts_files" -c copy -bsf:a aac_adtstoasc "$out".mp4
+  ffmpeg -i "concat:$ts_files" -c copy "$out".mp4
   mv "$out".mp4 "$orig"
   popd
   
