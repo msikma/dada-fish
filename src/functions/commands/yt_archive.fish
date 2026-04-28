@@ -13,6 +13,8 @@ function _yt_archive_usage
   echo "  -na           no download archive check (redownload)"
   echo "  -ar:PATH      path to custom download archive"
   echo "  -nc           no browser cookies"
+  echo "  -chrome       use Chrome cookies"
+  echo "  -nm           no Mutagen"
 end
 
 function yt_archive --description "Archives videos from various sites"
@@ -55,6 +57,16 @@ function yt_archive --description "Archives videos from various sites"
   # Disables browser cookies.
   if contains -- "-nc" $argv
     set arg_cookies
+  end
+  # Use Chrome cookies.
+  if contains -- "-chrome" $argv
+    set arg_cookies "--cookies-from-browser" "chrome"
+  end
+  # Disables Mutagen. FIXME: let's enable this by default. It'll probably be fine?
+  set arg_embedder "--compat-options" "embed-thumbnail-atomicparsley"
+  #set arg_embedder
+  if contains -- "-nm" $argv
+    set arg_embedder "--compat-options" "embed-thumbnail-atomicparsley"
   end
 
   # Add the index number to the output template if we're downloading as playlist.
@@ -107,17 +119,30 @@ function yt_archive --description "Archives videos from various sites"
 
     yt-dlp -v --add-metadata --write-description --write-info-json \
       --write-thumbnail --embed-thumbnail --get-comments --no-playlist \
-      --impersonate chrome --live-from-start --color always \
+      --impersonate chrome --mtime --live-from-start --color always \
       $arg_subs \
       $arg_sub_langs \
       $arg_dl_archive \
       $arg_cookies \
+      $arg_embedder \
       $arg_format \
       $arg_audio \
       $arg_convert_thumbnail \
       $arg_merge_output_format \
       $arg_output_template \
       "$arg" 2>&1 | tee -a "_log.txt"
+    
+    # Mutagen sometimes breaks our downloads. In this case it's better to fail than create a corrupted file.
+    # See <https://github.com/yt-dlp/yt-dlp/issues/16069>.
+    # if grep -q "WARNING: unable to embed using mutagen" "_log.txt"
+    #   # We probably have a corrupted file.
+    #   echo "yt_archive: error: Mutagen corrupted a temporary file."
+    #   echo "Rerun the command with -nm to disable Mutagen temporarily."
+    #   echo "Temp directory is preserved: $temp"
+    #   set has_errored "1"
+    #   popd
+    #   continue
+    # end
 
     # Strip colors and convert carriage returns for the logfile.
     perl -pe 's/\e\[[0-9;]*[mGKH]//g' "_log.txt" | \
@@ -138,7 +163,7 @@ function yt_archive --description "Archives videos from various sites"
     end
     if test $status -ne 0
       echo "yt_archive: error: yt-dlp command failed with status code $status" 1>&2
-      echo "temp directory is preserved: $temp"
+      echo "Temp directory is preserved: $temp"
       set has_errored "1"
       popd
       continue
