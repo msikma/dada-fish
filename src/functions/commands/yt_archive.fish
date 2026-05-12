@@ -68,6 +68,7 @@ function yt_archive --description "Archives videos from various sites"
   if contains -- "-nm" $argv
     set arg_embedder "--compat-options" "embed-thumbnail-atomicparsley"
   end
+  set arg_live "--live-from-start"
 
   # Add the index number to the output template if we're downloading as playlist.
   set arg_output_template "-o" "%(title)s [%(id)s].%(ext)s"
@@ -116,10 +117,15 @@ function yt_archive --description "Archives videos from various sites"
       set arg_subs
       set arg_sub_langs
     end
+    # SOOP Live does not support --live-from-start.
+    if string match -q "*sooplive.com/*" "$arg"
+      set arg_live
+    end
 
     yt-dlp -v --add-metadata --write-description --write-info-json \
       --write-thumbnail --embed-thumbnail --get-comments --no-playlist \
-      --impersonate chrome --mtime --live-from-start --color always \
+      --impersonate chrome --mtime --color always \
+      $arg_live \
       $arg_subs \
       $arg_sub_langs \
       $arg_dl_archive \
