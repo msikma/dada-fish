@@ -124,7 +124,7 @@ function yt_archive --description "Archives videos from various sites"
 
     yt-dlp -v --add-metadata --write-description --write-info-json \
       --write-thumbnail --embed-thumbnail --get-comments --no-playlist \
-      --impersonate chrome --mtime --color always \
+      -t sleep --impersonate chrome --mtime --color always \
       $arg_live \
       $arg_subs \
       $arg_sub_langs \
@@ -150,6 +150,8 @@ function yt_archive --description "Archives videos from various sites"
     #   continue
     # end
 
+    set ytdlp_status "$status"
+
     # Strip colors and convert carriage returns for the logfile.
     perl -pe 's/\e\[[0-9;]*[mGKH]//g' "_log.txt" | \
       tr '\r' '\n' | \
@@ -167,8 +169,8 @@ function yt_archive --description "Archives videos from various sites"
       end
       continue
     end
-    if test $status -ne 0
-      echo "yt_archive: error: yt-dlp command failed with status code $status" 1>&2
+    if test $ytdlp_status -ne 0
+      echo "yt_archive: error: yt-dlp command failed with status code $ytdlp_status" 1>&2
       echo "Temp directory is preserved: $temp"
       set has_errored "1"
       popd
