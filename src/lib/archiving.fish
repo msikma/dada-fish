@@ -1,6 +1,22 @@
 # dada-fish <https://github.com/msikma/dada-fish>
 # © MIT license
 
+# Returns an Internet Archive identifier from a URL (or returns a plain ID if passed).
+function _ia_id --argument-names input
+  if not string match -q 'http*' -- $input
+    echo $input
+    return 0
+  end
+
+  set -l id (string replace -r '^https?://archive\.org/details/([^/?#]+).*$' '$1' -- $input)
+
+  if test "$id" = "$input"
+    return 1
+  end
+
+  echo $id
+end
+
 # Escapes XML entities, e.g. & to &amp;
 function _escape_entities --argument-names string
   set escaped (echo "$string" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g")
