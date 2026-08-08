@@ -42,7 +42,7 @@ end
 function _ytdlp_get_name --argument-names info_json_fn
   ! _require_cmd "jq"; and return 1
   set title (_sanitize_string (cat "$info_json_fn" | jq -r ".title"))
-  set uploader (_sanitize_string (cat "$info_json_fn" | jq -r ".uploader"))
+  set uploader (_sanitize_string (cat "$info_json_fn" | jq -r ".channel // .uploader"))
   set upload_date (_sanitize_string (cat "$info_json_fn" | jq -r ".upload_date"))
   set id (_ytdlp_get_id "$info_json_fn")
   # E.g. 20190101 [uploader name] My Video Title [kOaejxdh2Mx]
